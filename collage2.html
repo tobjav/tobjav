@@ -22,6 +22,11 @@
         }
 
         a { color: #FABD2F; font-weight: bold; font-family: DM, sans-serif; }
+        
+        #shiftadvice {
+            display: inline-flex;
+            transform: translateX(10%);
+        }
 
         /* ── TOOLBAR ── */
         #toolbar {
@@ -238,6 +243,10 @@
                 border-radius: 1.5vw;
             }
 
+            #shiftadvice {
+                display: none;
+            }
+
             .delete-btn {
                 width:  9vw;
                 height: 9vw;
@@ -277,6 +286,7 @@
         }
 
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
 
@@ -289,7 +299,7 @@
 
 <div id="toolbar">
     <a style="text-decoration:underline;" href="index.html">tobjav's</a>
-    <span>ig collage maker</span>
+    <span>ig collage maker  <div id="shiftadvice">[shift+scroll to pan]</div></span>
     <div id="toolbar-right">
         <button id="add-file-btn">＋ Add</button>
         <input type="file" id="file-input" accept="image/*" multiple>
@@ -602,8 +612,15 @@ exportBtn.addEventListener('click', async () => {
     exportCanvas.height = OUT_H;
 
     const wrappers = document.querySelectorAll('.image-wrapper');
+    const zip = new JSZip();
+
+    // Update button to show progress
+    const origLabel = exportBtn.textContent;
+    exportBtn.disabled = true;
 
     for (let i = 0; i < TOTAL_SLIDES; i++) {
+        exportBtn.textContent = (i + 1) + ' / ' + TOTAL_SLIDES;
+
         ctx.fillStyle = '#fff';
         ctx.fillRect(0, 0, OUT_W, OUT_H);
 
@@ -618,13 +635,25 @@ exportBtn.addEventListener('click', async () => {
                 ctx.drawImage(el, (x - winLeft) * scaleX, y * scaleY, ww * scaleX, wh * scaleY);
         });
 
-        const link = document.createElement('a');
-        link.download = 'scrl_slice_' + (i + 1) + '.jpg';
-        link.href = exportCanvas.toDataURL('image/jpeg', 0.95);
-        link.click();
-        await new Promise(r => setTimeout(r, 150));
+        // Convert canvas to base64 and add to zip (strip the data:image/jpeg;base64, prefix)
+        const dataUrl = exportCanvas.toDataURL('image/jpeg', 0.95);
+        const base64  = dataUrl.split(',')[1];
+        zip.file('collageslice_' + (i + 1) + '.jpg', base64, { base64: true });
+
+        // Yield to keep UI responsive
+        await new Promise(r => setTimeout(r, 0));
     }
-    alert('Export complete! Check your Downloads folder.');
+
+    exportBtn.textContent = 'Zipping...';
+    const blob = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
+    const link = document.createElement('a');
+    link.download = 'carousel_export.zip';
+    link.href = URL.createObjectURL(blob);
+    link.click();
+    URL.revokeObjectURL(link.href);
+
+    exportBtn.textContent = origLabel;
+    exportBtn.disabled = false;
 });
 
 // ── Portrait nav arrows ───────────────────────────────────────────────────────
