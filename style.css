@@ -1,0 +1,383 @@
+@font-face {
+    font-family: 'DM';
+    src: url('DMSans-VariableFont_opsz,wght.ttf') format('woff2');
+    /* font-weight: normal; */
+    /* font-style: normal; */
+}
+body {
+  background-color: #111111;
+  font-family: DM;
+  font-weight: normal;
+}
+
+h1 {
+  margin-left:auto;
+  margin-right:auto;
+  font-weight: bolder;
+  letter-spacing:5px;
+  transform: translateX(30px);
+  color: white;
+}
+
+h5 {
+  text-align:center;
+  margin-left:auto;
+  margin-right:auto;
+  word-spacing:0px;
+  font-weight: 400;
+}
+
+.terminal-header::after {
+  content: "_";
+  margin-left: 15px;
+  color: #fabd2f; 
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+img {
+  border-radius: 10px;
+  margin-bottom: 5%;
+  display: block;
+  width:500px;
+  box-shadow: 2px 2px 20px rgba(0 , 0, 0, .4);
+}
+
+a {
+  color: #fabd2f;
+  text-decoration: underline;
+  font-weight: bolder;
+}
+
+table {
+  margin-left: 27%;
+  margin-right: 50%;
+}
+
+/* Launcher Button */
+#chat-launcher {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  background: #ffffff;
+  color: #000;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  font-family: DM;
+}
+
+/* Main Window */
+#chat-window {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 400px;
+  height: 50%;
+  background: #101011;
+  border: 3px solid #fff;
+  border-radius: 20px;
+  color: #000;
+  font-family: DM;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+  z-index: 1001;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* The full-screen overlay */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1a1a1a; /* Change to your site's theme color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Ensures it stays on top of everything */
+  transition: opacity 0.5s ease;
+}
+
+/* ── SPLASH ── */
+#splash-screen {
+    position: fixed;
+    inset: 0;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-out;
+}
+.splash-content { display:flex; flex-direction:column; align-items:center; gap:20px; }
+.splash-logo {
+    font-size: clamp(32px, 12vw, 72px);
+    font-weight: bold;
+    letter-spacing: 0px;
+    font-family: DM;
+}
+.progress-track {
+    width:180px; height:4px;
+    background:rgba(255,255,255,0.1);
+    border-radius:2px; overflow:hidden;
+}
+.progress-bar {
+    height:100%; width:0%;
+    background:#FABD2F;
+    animation: fakeLoad 1.8s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+@keyframes fakeLoad {
+    0%{width:0%} 15%{width:0%} 30%{width:40%} 80%{width:75%} 100%{width:100%}
+}
+#splash-screen.fade-away { opacity:0; pointer-events:none; }
+
+/* The actual throbber (spinner) */
+.spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  border: 3px solid;
+  border-color: #FFF #FFF transparent;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+.spinner::after {
+  content: '';  
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  border: 3px solid;
+  border-color: transparent #fabd2f #fabd2f;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  animation: rotationBack 0.5s linear infinite;
+  transform-origin: center center;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 
+    
+@keyframes rotationBack {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+/* Class to fade it out via JS */
+.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Show/Hide Logic */
+.chat-hidden {
+  transform: translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Chat Styling */
+.chat-header { background: #fff; color: #000; padding: 10px; display: flex; justify-content: space-between; border-radius: 17px 17px 0 0; }
+#chat-body { flex-grow: 1; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.chat-footer { padding: 10px; border-top: 1px solid #eee; display: flex; }
+#chat-input { flex-grow: 1; border: 1px solid #ddd; padding: 5px; border-radius: 4px; }
+
+/* Message Bubbles */
+.msg { padding: 8px 12px; border-radius: 15px; max-width: 80%; font-size: 14px;}
+.bot { background: #fff; align-self: flex-start; text-align: left;}
+.user { background: #bfff18; color: black; align-self: flex-end; text-align: right;}
+
+/* General styling for icon buttons */
+.icon-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  transition: opacity 0.2s;
+}
+
+.icon-btn:hover {
+  opacity: 0.7;
+}
+
+.send-btn {
+  color: #fff;
+  margin-left: 5px;
+}
+
+.chat-footer {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-top: 1px solid #eee;
+}
+
+
+
+.guestbook-wrapper {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #f9f9f9; /* Match your site's background */
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.guestbook-wrapper h2 {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.guestbook-form table {
+  border: 2px inset #fff;
+  background-color: #101011;
+  padding: 10px;
+  font-family: "arial";
+}
+
+.guestbook-form input, .guestbook-form textarea {
+  border: 2px inset #fff;
+  background-color: #fff;
+  padding: 4px;
+}
+
+.guestbook-form button {
+  background-color: #fff;
+  border: 2px outset #000000;
+  padding: 5px 15px;
+  cursor: pointer;
+}
+
+/* The container */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* The Animation Setup */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  flex-direction: column; /* Stacks image and text vertically */
+  gap: 15px;
+}
+
+/* When this class is added via JS, it fades in */
+.lightbox-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* The Image Animation */
+.lightbox-overlay img {
+  max-width: 95%;
+  max-height: 95%;
+  object-fit: contain;
+  
+  
+  /* Start small and slightly transparent */
+  transform: scale(0.8);
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* When active, the image scales to its full 90% size */
+.lightbox-overlay.active img {
+  transform: scale(1);
+}
+
+ .row {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 0.7%;
+}
+
+.caption {
+  color: white;
+  font-family: sans-serif;
+  font-size: 1.1rem;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 8px 16px;
+  border-radius: 20px;
+  
+  /* Animation: Starts faded out like the image */
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s ease;
+}
+
+.lightbox-overlay.active .caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Create four equal columns that sits next to each other */
+.column {
+  flex: 25%;
+  max-width: 23%;
+  padding: 0 0.7%;
+}
+
+.column img {
+  margin-top: 0%;
+  vertical-align: middle;
+  width: 100%;
+}
+
+@media screen and (orientation: portrait) {
+  .column {
+    flex: 100%;
+    max-width: 100%;
+  }
+  #chat-launcher {
+    display: none;
+  }
+  #chat-window {
+    display: none;
+  }
+  .lightbox-overlay {
+    display: none;
+  }
+}

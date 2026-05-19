@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Tobj</title>
+    <style>
+        /* This changes the text highlight selection color */
+        ::selection {
+            background-color: #fabd2f;
+            color: #0b0b0b;
+        }
+        /* For Safari support */
+        ::-moz-selection {
+            background-color: #fabd2f;
+            color: #0b0b0b;
+        }
+        @font-face {
+            font-family: 'DM';
+            src: url('DMSans-VariableFont_opsz,wght.ttf') format('woff2');
+            /* font-weight: normal; */
+            /* font-style: normal; */
+        }
+        body {
+            background-color: #111111; 
+            color: #e0e0e0;
+            font-family: DM;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        a {
+            color: #fabd2f;
+            text-decoration: underline;
+            font-weight: bolder;    
+        }
+        .wrapper {
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 0px; 
+        }
+
+        .content-box {
+            border: 1px solid #333322; 
+            padding: 30px;
+            box-sizing: border-box;
+            background-color: rgba(11, 11, 11, 0.8); 
+        }
+
+        .content-box h2 {
+            font-family: DM; 
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .content-box p {
+            line-height: 1.6;
+            font-size: 0.95rem;
+            color: #cccccc;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between; /* Pushes title to left, button to right */
+            align-items: center;     /* Perfectly aligns them vertically */
+            margin-bottom: 20px;     /* Spaces it from content below */
+        }
+
+        .home-btn {
+            display: inline-block;   /* Changed from display: table */
+            padding: 6px 12px;
+            border: 1px solid #333322;
+            background-color: #141414;
+            color: #fabd2f;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        /* Optional: Removes default margin from header so alignment is perfect */
+        .header-container h2 {
+            margin: 0; 
+        }
+
+        .home-btn:hover {
+            background-color: #fabd2f;
+            color: #0b0b0b;
+            border-color: #fabd2f;
+        }
+
+        /* ── SPLASH ── */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background: #111111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+        .splash-content { display:flex; flex-direction:column; align-items:center; gap:20px; }
+        .splash-logo {
+            font-size: clamp(32px, 12vw, 72px);
+            font-weight: bold;
+            letter-spacing: 0px;
+            font-family: DM;
+        }
+        .progress-track {
+            width:180px; height:4px;
+            background:rgba(255,255,255,0.1);
+            border-radius:2px; overflow:hidden;
+        }
+        .progress-bar {
+            height:100%; width:0%;
+            background:#FABD2F;
+            animation: fakeLoad .5s cubic-bezier(0.4,0,0.2,1) forwards;
+        }
+        @keyframes fakeLoad {
+            0%{width:0%} 100%{width:100%}
+        }
+        #splash-screen.fade-away { opacity:0; pointer-events:none; }
+
+
+        @media (max-width: 768px) {
+            .wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+  <div id="splash-screen">
+    <div class="splash-content">
+        <div class="splash-logo">tobjav</div>
+        <div class="progress-track"><div class="progress-bar"></div></div>
+    </div>
+  </div>
+    <div class="wrapper">
+        
+        <div class="content-box">
+            
+        <div class="header-container">
+            <h2>who is tobj?</h2>
+            <a href="index.html" class="home-btn">[HOME]</a>
+        </div>
+            <img style="margin-left:auto;margin-right:auto;width: 400px; border-radius: 10%;"src="assets/images/mii.png">
+            <p>hello! i'm toby. i take <a href="https://www.pexels.com/@toby-francis-2161504024/gallery/">photos</a>, make graphics, and code terrible <a href="strudels.html"> beats </a>(i coded this site in vsc so apologies if anything is broken :)</p>
+            
+            <!-- <br><hr style="border-color: #333322;"><br>  -->
+            
+            <h2>what does tobj do?</h2>
+            <p>i'm big into bicycles (its essentially most of what i do) and i study engineering so i'm hoping to do something mech related in the future. atm i volunteer at <a href="https://www.instagram.com/bikobikes/">biko bikes</a> (come along if you need your bike repairing pro bono). my uni commuter is a cannondale caad 1 which i hate and love at the same time.</p>
+            <img style="margin-left:auto;margin-right:auto;width: 400px; border-radius: 10%;"src="assets/bike/cannon.png"><br><hr>
+            i used to have a triban 500 which i bikepacked through holland and belgium on, but the curry mile mercilessly destroyed it two weeks into uni. basically i crashed :( i miss you beer diary bike. anyway i'm gonna restore it at some point, just saving up for a new groupset.
+            <img style="margin-left:auto;margin-right:auto;width: 400px; border-radius: 10%;"src="assets/bike/btwin.png"><br><br>
+        </div>
+
+        <div class="content-box">
+            <h2>what does tobj listen to?</h2>
+            <p><strong>at the moment</strong> big thief, oxis, boards of canada, daft punk, headache/vegyn.</p>
+            <h2>what shows does tobj like?</h2>
+            <p>i take after my father's schurniverse obsession: the office, b99, the good place. also a big fan of bcs and bb.
+            </p>
+            <h2>is tobj ever bored?</h2>
+            <p>often. i kill time on old driving games (burnout mostly) or learning adrianne lenker songs on guitar [i used to play the drums but i don't want my flatmates to hate me so have given it up for the time being].</p>
+            <h2>is tobj contactable?
+            </h2>
+            <p>hell yeah. if you want to get in touch: <br> instagram: <a href="https://www.instagram.com/tobjav/">@tobjav</a><br>
+            email: <a href="mailto:tobjav@yahoo.com">tobjav@yahoo.com</a> <br>
+            [ik, yahoo email skull emoji]</p>
+        </div>
+
+    </div>
+
+
+<script>
+
+window.addEventListener('DOMContentLoaded', () => {
+    const splash = document.getElementById('splash-screen');
+    
+    // Wait 1.5 seconds (1500 milliseconds)
+    setTimeout(() => {
+        splash.classList.add('fade-away');
+        
+        // Wait 0.5 seconds for the CSS fade transition to finish, then delete it
+        setTimeout(() => {
+            splash.remove();
+        }, 500);
+        
+    }, 500);
+});
+
+</script>
+</body>
+</html>

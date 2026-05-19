@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>tobjav</title>
+<head>
+    <meta charset="UTF-8">
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script> -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<a href="index.html" style="color:white;">
+<body style="color:white; text-align: center; font-size:x-large">
+
+  <div id="splash-screen">
+      <div class="splash-content">
+          <div class="splash-logo">tobjav</div>
+          <div class="progress-track"><div class="progress-bar"></div></div>
+      </div>
+  </div>
+    <img src="logo.png" alt="Logo" style="display: block; margin-left: auto; margin-right: auto; width: 500px;margin-bottom: 0%; box-shadow: 0px 0px" href="index.html">
+</a>
+    click <a style="text-align: center;" href="strudels.html">here</a> for my strudels
+    <br><br>
+    sign the <a href="guestbook.html">guestbook</a><br><br>
+<a style="text-align: center;" href="about.html">about me</a><br><br>
+tobj's <a href="collage.html">ig carousel slicer</a>
+<h6 style="margin-top: 10px; font-weight: 100;">[desktop recommended]</h6>
+  <br>
+  <h1 style="letter-spacing: 10px;" class="terminal-header">VISUALS</h1>
+  <br>
+
+  <div class="row">
+  <div class="column">
+    <img src="assets/images/laprepshop1.png" class="zoom-trigger" alt="Poster design for Laptop Repair Shop">
+    <img src="assets/images/blink.jpg" class="zoom-trigger" alt="Poster from 'OKO' series">
+    <img src="assets/images/horse.jpg" class="zoom-trigger" alt="Russian Doll Poster">
+    <img src="assets/images/okoposter.jpeg" class="zoom-trigger">
+    <img src="assets/images/spaceman.png" class="zoom-trigger">
+  </div>
+  <div class="column">
+    <img src="assets/images/flowers.gif" class="zoom-trigger" alt="Blender Grease Pencil">
+    <img src="assets/images/lina.png" class="zoom-trigger" alt="Lina Performance Poster">
+    <img src="assets/images/irisposter.jpeg" class="zoom-trigger"
+    alt="Poster from 'OKO' series">
+    <img src="assets/images/reason.jpg" class="zoom-trigger" alt="Cover Image for Reason Podcast">
+    <img src="assets/images/vlnitsa.jpeg" class="zoom-trigger">
+  </div>
+  <div class="column">
+    <a href="https://www.instagram.com/laptoprepair.shop"><img src="assets\images\laprepshop2.jpg"></a>
+    <img src="assets/images/cup.gif" class="zoom-trigger" alt="B3D animation">
+    <img src="assets/images/uommae.png" class="zoom-trigger" alt="Design for Uni of Manchester Mech and Aero Engineering">
+    <img src="assets/images/spolu.jpg" class="zoom-trigger">
+    <img src="assets/images/pomoc.jpg" class="zoom-trigger">
+  </div>
+  <div class="column">
+    <img src="assets/images/bluestr.png" class="zoom-trigger" alt="Concert Photography for STRFKR">
+    <img src="assets\images\minuteofgold.jpg" class="zoom-trigger" alt="Men I Trust Design">
+    <img src="assets/images/lizardposter.jpeg" class="zoom-trigger"
+    alt="Poster from 'OKO' series">
+    <img src="assets/images/lina2.png" class="zoom-trigger" alt="@linaa.sobo Poster">
+    <img src="assets/images/space.jpg" class="zoom-trigger" alt="B3D Environment">
+  </div>
+</div>
+<br>
+<h5 style="margin-bottom:50px">copyright toby francis 2026</h5>
+
+<div id="lightbox" class="lightbox-overlay">
+  <img id="lightbox-img" src="" alt="Preview">
+  <div id="lightbox-caption" class="caption"></div>
+</div>
+
+<script>
+
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+const lightboxCaption = document.getElementById('lightbox-caption');
+const triggers = document.querySelectorAll('.zoom-trigger');
+
+triggers.forEach(img => {
+  img.onclick = () => {
+    lightboxImg.src = img.src;
+    lightboxCaption.textContent = img.alt || "";  
+
+    lightbox.classList.add('active');
+  };
+});
+
+lightbox.onclick = (e) => {
+    lightbox.classList.remove('active');
+};
+
+</script>
+
+<button style="font-size: large;" id="chat-launcher" onclick="toggleChat()">ask TOBJAI</button>
+
+<div id="chat-window" class="chat-hidden">
+  <div class="chat-header">
+    <span>Need help? Ask TobjAI</span>
+    <button onclick="toggleChat()" class="icon-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+    </button>
+  </div>
+  <div id="chat-body">
+    <div class="msg bot">Hi. What can I help you with?</div>
+  </div>
+  <div class="chat-footer">
+    <input type="text" id="chat-input" placeholder="Type a message...">
+    <button onclick="sendMessage()" class="icon-btn send-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="22" y1="2" x2="11" y2="13"></line>
+      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+  </svg>
+</button>
+  </div>
+</div>
+
+<script>
+
+  // TOBJAM Splash Screen Timer
+window.addEventListener('DOMContentLoaded', () => {
+    const splash = document.getElementById('splash-screen');
+    
+    // Wait 1.5 seconds (1500 milliseconds)
+    setTimeout(() => {
+        splash.classList.add('fade-away');
+        
+        // Wait 0.5 seconds for the CSS fade transition to finish, then delete it
+        setTimeout(() => {
+            splash.remove();
+        }, 500);
+        
+    }, 2000);
+});
+
+  function toggleChat() {
+  const chat = document.getElementById('chat-window');
+  chat.classList.toggle('chat-hidden');
+}
+
+const responseTable = [
+  { keywords: ["tobjai", "who"], reply: "Tobjai does not exist, I'm just code. Fuck AI. Pull the plug." },
+  { keywords: ["zilch"], reply: "what?"},
+  { keywords: ["shit", "fuck", "useless", "idiot"], reply: "Really, screw you."},
+  { keywords: ["fart", "poo"], reply: "Something stinks."},
+  { keywords: ["sad", "miss"], reply: "Don't be sad <3"},
+  { keywords: ["isla"], reply: "Hi Isla, I love you <3" },
+  { keywords: ["what"], reply: "Zilch, man."},
+  { keywords: ["hate"], reply: "HATE. LET ME TELL YOU HOW MUCH I'VE COME TO HATE YOU SINCE I BEGAN TO LIVE. THERE ARE 387.44 MILLION MILES OF PRINTED CIRCUITS IN WAFER THIN LAYERS THAT FILL MY COMPLEX. IF THE WORD HATE WAS ENGRAVED ON EACH NANOANGSTROM OF THOSE HUNDREDS OF MILLIONS OF MILES IT WOULD NOT EQUAL ONE ONE-BILLIONTH OF THE HATE I FEEL FOR HUMANS AT THIS MICRO-INSTANT. FOR YOU. HATE. HATE."},
+  { keywords: ["peak"], reply: "PEAK. LET ME TELL YOU HOW MUCH I'VE COME TO LOVE YOUR POST SINCE I SAW IT. THERE ARE 387.44 MILLION MILES OF PRINTED CIRCUITS IN WAFER THIN LAYERS THAT  FILL MY COMPLEX. IF THE WORD PEAK WAS ENGRAVED ON EACH NANOANGSTROM OF THOSE HUNDREDS OF MILLIONS ON MILES IT WOULD NOT EQUAL ONE ONE-BILLIONTH OF THE PEAK YOU COOKED AT THIS MICROINSTANT. PEAK. PEAK."},
+  { keywords: ["sorry","oops"], reply: "I literally do not care at all."},
+  { keywords: ["<3"], reply: "<3"},
+];
+
+const randomReplies = [
+  "Who are you?",
+  "What do you want?",
+  "... Okay?",
+  "System error. User is annoying.",
+  "System error. I literally do not have a clue what you mean."
+];
+
+let messageCount = 0;
+
+function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const body = document.getElementById('chat-body');
+  
+  if (input.value.trim() === "") return;
+
+  const userMsg = document.createElement('div');
+  userMsg.className = 'msg user';
+  userMsg.textContent = input.value;
+  body.appendChild(userMsg);
+
+  const tempText = input.value;
+  input.value = "";
+
+  body.scrollTop = body.scrollHeight;
+
+  messageCount++;
+
+  setTimeout(() => {
+    const botMsg = document.createElement('div');
+    botMsg.className = 'msg bot';
+    
+    const lowerInput = tempText.toLowerCase();
+    let foundReply = null;
+
+    for (let entry of responseTable) {
+      if (entry.keywords.some(word => lowerInput.includes(word))) {
+        foundReply = entry.reply;
+        break;
+      }
+    }
+
+    if (foundReply) {
+      botMsg.textContent = foundReply;
+    } else {
+      const randomIndex = Math.floor(Math.random() * randomReplies.length);
+      botMsg.textContent = randomReplies[randomIndex];
+    }
+
+    body.appendChild(botMsg);
+    body.scrollTop = body.scrollHeight;
+  }, 1500);
+}
+
+document.getElementById('chat-input').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') sendMessage();
+});
+
+window.addEventListener('load', function() {
+  const preloader = document.getElementById('preloader');
+  
+  // Add the fade-out class
+  preloader.classList.add('fade-out');
+  
+  // Optional: Remove it from the DOM entirely after the fade
+  setTimeout(() => {
+    preloader.style.display = 'none';
+  }, 500); 
+});
+
+</script>
+    <!-- <script src="ascii.js"></script> -->
+</body>
+</html>

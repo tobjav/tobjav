@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <div id="preloader">
+    <div class="spinner"></div>
+  </div> 
+</head>
+<a href="index.html" style="color:white;">
+<body style="color:white; text-align: center"> 
+      <link rel="stylesheet" href="style.css">
+    <img src="logo.png" alt="Logo" style="display: block; margin-left: auto; margin-right: auto; width: 300px;box-shadow: 0px 0px" href="index.html">
+</a>
+    <h2 style="text-align: center; font-weight: lighter; color: white; font-family: sans-serif;font-size: xx-large">guestbook</h2><a href="index.html"> homepage </a><br><br>
+    n.b. responses might take a while to appear on this page
+<div class="guestbook-wrapper">
+  <h2>leave a message :)</h2>
+  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfL3mcJTihU6lfCDlmXpVJ4jhGWMvTehfxzrCuPzyULVuZDag/viewform?embedded=true" 
+          width="100%" 
+          height="600px" 
+          frameborder="0" 
+          marginheight="0" 
+          marginwidth="0">
+    Loading…
+  </iframe>
+</div>
+<h1>responses</h1>
+
+<script>
+  window.addEventListener('load', function() {
+  const preloader = document.getElementById('preloader');
+  
+  // Add the fade-out class
+  preloader.classList.add('fade-out');
+  
+  // Optional: Remove it from the DOM entirely after the fade
+  setTimeout(() => {
+    preloader.style.display = 'none';
+  }, 500); 
+});
+</script>
+
+</body>
+</html>

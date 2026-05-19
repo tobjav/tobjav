@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Neocities Layout</title>
+    <style>
+        body {
+            /* Dark, slightly textured background color */
+            background-color: #0b0b0b; 
+            /* To get the exact look from the image, you'd link a tiled texture here: */
+            /* background-image: url('your-texture-pattern.png'); */
+            
+            color: #e0e0e0;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* The main container holding the layout together */
+        .wrapper {
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two equal columns */
+            gap: 0px; /* No gap because the borders touch */
+        }
+
+        /* This is the magic "content box" from your image */
+        .content-box {
+            border: 1px solid #333322; /* Faint, dark yellowish/grey border */
+            padding: 30px;
+            box-sizing: border-box;
+            background-color: rgba(11, 11, 11, 0.8); /* Slight opacity over the background */
+        }
+
+        /* Styling the retro headers */
+        .content-box h2 {
+            font-family: "Arial Black", Gadget, sans-serif; /* Thick, bold retro font */
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        /* Example text styles */
+        .content-box p {
+            line-height: 1.6;
+            font-size: 0.95rem;
+            color: #cccccc;
+        }
+
+        /* Responsive tweak: stack columns on mobile screens */
+        @media (max-width: 768px) {
+            .wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        
+        <div class="content-box">
+            <h2>Me</h2>
+            <p>I edit this site using GNU Emacs, there are no build tools used. Best way to get in touch may be via my profile.</p>
+            
+            <br><hr style="border-color: #333322;"><br> <h2>Interests</h2>
+            <p>Programming, art, cooking, 90s aesthetic, philosophy, politics, history, design, amateur mathematics.</p>
+        </div>
+
+        <div class="content-box">
+            <h2>Music I like</h2>
+            <p><strong>Metal/Hardcore:</strong> Amenra, envy, Alcest, pg.99, Loma Prieta, Saetia, Orchid, Deafheaven, Deftones.</p>
+            <p><strong>Electronic:</strong> TR/ST, HEALTH, Drab Majesty, Boy Harsher, Aphex Twin.</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
