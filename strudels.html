@@ -1,39 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
+<title>tobjav</title>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script> -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── PORTRAIT / MOBILE SCALING ───────────────────────────────────────
+           Calibrated for ~754px portrait width (1344px landscape device).
+           Supplements style.css — desktop completely unchanged.             */
 
+        @media screen and (orientation: portrait) {
+
+            body {
+                font-size: 5vw;
+            }
+
+            .terminal-header {
+                font-size: 10vw;
+                letter-spacing: 3px;
+                transform: translateX(0);
+            }
+
+            /* Fix images overflowing at hard-coded 500px from style.css */
+            img {
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+            }
+
+            iframe {
+              width: 100%;
+              max-width: 100%;
+              height: auto;
+              margin-bottom: 5%;
+              display: block;
+            }
+
+            /* Keep style.css single-column layout, just fix the image width */
+            /* .column and .row intentionally not overridden */
+
+            h5 {
+                font-size: 3.5vw;
+            }
+
+            /* Re-enable lightbox in portrait (style.css hides it) */
+            .lightbox-overlay {
+                display: flex !important;
+            }
+
+                    #splash-screen {
+            position: fixed;
+            inset: 0;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+            }
+            .splash-content { display:flex; flex-direction:column; align-items:center; gap:20px; }
+            .splash-logo {
+                font-size: clamp(32px, 12vw, 72px);
+                font-weight: bold;
+                letter-spacing: 0px;
+                font-family: DM;
+            }
+            .progress-track {
+                width:180px; height:4px;
+                background:rgba(255,255,255,0.1);
+                border-radius:2px; overflow:hidden;
+            }
+            .progress-bar {
+                height:100%; width:0%;
+                background:#FABD2F;
+                animation: fakeLoad 1.8s cubic-bezier(0.4,0,0.2,1) forwards;
+            }
+            @keyframes fakeLoad {
+                0%{width:0%} 15%{width:0%} 30%{width:40%} 80%{width:75%} 100%{width:100%}
+            }
+            #splash-screen.fade-away { opacity:0; pointer-events:none; }
+
+            }
+    </style>
 </head>
 <a href="index.html" style="color:white;">
 <body style="color:white; text-align: center; font-size:x-large">
-  <div id="preloader">
-    <div class="spinner"></div>
-  </div>  
-      <link rel="stylesheet" href="style.css">
-    <img src="logo.png" alt="Logo" style="display: block; margin-left: auto; margin-right: auto; width: 300px;box-shadow: 0px 0px" href="index.html">
+
+  <div id="splash-screen">
+      <div class="splash-content">
+          <div class="splash-logo">tobjav</div>
+          <div class="progress-track"><div class="progress-bar"></div></div>
+      </div>
+  </div>
+    <img src="logo.png" alt="Logo" style="display: block; margin-left: auto; margin-right: auto; width: min(500px, 85vw); margin-bottom: 0%; box-shadow: 0px 0px" href="index.html">
 </a>
-    <h1 style="font-weight:100; letter-spacing: normal" class="terminal-header">tobinko's trash beats</h1><a href="index.html""> homepage </a><br><br>
-  made in <a href="https://strudel.cc">strudel</a>
-
+    <a style="text-align: center;" href="index.html">[HOME]</a>
+    <br>
+  <h1 style="letter-spacing: 10px;" class="terminal-header">BEATS</h1>
   <br>
-  <br>
 
-<iframe width="540" height="675" src="https://www.youtube.com/embed/tS7MY88kGuQ" title="Better" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  <div class="row">
+  <div class="column">
+    <iframe width="540" height="675" src="https://www.youtube.com/embed/tS7MY88kGuQ" title="Better" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>  
+    <iframe width="540" height="675" src="https://www.youtube.com/embed/46lTeawvYws" title="Arc - Live" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+  <div class="column">
+    <iframe width="540" height="540" src="https://www.youtube.com/embed/ZGbFdf02jqo" title="ode to fifty percent off microwaveable thai curry" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <iframe width="540" height="675" src="https://www.youtube.com/embed/Muq-41covgw" title="2L012" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+  <div class="column">
+    <iframe width="540" height="960" src="https://www.youtube.com/embed/hS3K3-87k28" title="half-pint - tobjav" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+  <div class="column">
+    <iframe width="540" height="960" src="https://www.youtube.com/embed/JbenRLMvBwU" title="the son of flynn (cover) {synth}" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+</div>
+<br>
+<h5 style="margin-bottom:50px">copyright toby francis 2026</h5>
 
-<iframe width="540" height="540" src="https://www.youtube.com/embed/ZGbFdf02jqo" title="ode to fifty percent off microwaveable thai curry" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-<iframe width="540" height="960" src="https://www.youtube.com/embed/hS3K3-87k28" title="half-pint - tobjav" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-<iframe width="540" height="960" src="https://www.youtube.com/embed/JbenRLMvBwU" title="the son of flynn (cover) {synth}" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-<iframe width="540" height="675" src="https://www.youtube.com/embed/Muq-41covgw" title="2L012" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-<iframe width="540" height="675" src="https://www.youtube.com/embed/46lTeawvYws" title="Arc - Live" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-<br><br>
-copyright @tobjav 26
+<div id="lightbox" class="lightbox-overlay">
+  <img id="lightbox-img" src="" alt="Preview">
+  <div id="lightbox-caption" class="caption"></div>
+</div>
 
 <script>
-  window.addEventListener('load', function() {
+
+  // TOBJAM Splash Screen Timer
+window.addEventListener('DOMContentLoaded', () => {
+    const splash = document.getElementById('splash-screen');
+    
+    // Wait 1.5 seconds (1500 milliseconds)
+    setTimeout(() => {
+        splash.classList.add('fade-away');
+        
+        // Wait 0.5 seconds for the CSS fade transition to finish, then delete it
+        setTimeout(() => {
+            splash.remove();
+        }, 500);
+        
+    }, 2000);
+});
+
+document.getElementById('chat-input').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') sendMessage();
+});
+
+window.addEventListener('load', function() {
   const preloader = document.getElementById('preloader');
   
   // Add the fade-out class
@@ -44,6 +158,8 @@ copyright @tobjav 26
     preloader.style.display = 'none';
   }, 500); 
 });
+
 </script>
+    <!-- <script src="ascii.js"></script> -->
 </body>
 </html>

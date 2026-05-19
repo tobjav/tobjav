@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ig carousel creator</title>
     <style>
         @font-face {
@@ -22,6 +22,11 @@
         }
 
         a { color: #FABD2F; font-weight: bold; font-family: DM, sans-serif; }
+        
+        #shiftadvice {
+            display: inline-flex;
+            transform: translateX(10%);
+        }
 
         /* ── TOOLBAR ── */
         #toolbar {
@@ -42,7 +47,7 @@
             gap: 8px;
         }
         button {
-            background: #000;
+            background: #1a1a1a;
             color: #fff;
             border: none;
             padding: 8px 14px;
@@ -175,13 +180,113 @@
         .progress-bar {
             height:100%; width:0%;
             background:#FABD2F;
-            animation: fakeLoad 1.8s cubic-bezier(0.4,0,0.2,1) forwards;
+            animation: fakeLoad 0.8s cubic-bezier(0.4,0,0.2,1) forwards;
         }
         @keyframes fakeLoad {
-            0%{width:0%} 15%{width:0%} 30%{width:40%} 80%{width:75%} 100%{width:100%}
+            0%{width:0%} 15%{width:0%} 30%{width:50%} 80%{width:50%} 100%{width:100%}
         }
         #splash-screen.fade-away { opacity:0; pointer-events:none; }
+
+        /* ── SLIDE NAV (portrait only) ── */
+        #slide-nav {
+            display: none;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 56px;
+            background: #000;
+            border-top: 1px solid #222;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 30;
+        }
+        #slide-nav button {
+            font-size: 22px;
+            padding: 6px 20px;
+            background: #222;
+            border-radius: 8px;
+        }
+        #nav-label {
+            font-size: 13px;
+            color: #aaa;
+            font-weight: bold;
+        }
+        /* In portrait: lock workspace scroll, shrink bottom to make room for nav */
+        body.portrait-mode #workspace-container {
+            bottom: 56px;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        /* ── PORTRAIT UI SCALING ─────────────────────────────────────────────
+           Calibrated for ~754px portrait width (e.g. 1344px landscape device).
+           All values only apply in portrait — desktop landscape unchanged.   */
+        @media (orientation: portrait) {
+
+            #toolbar {
+                height: 11vw;
+                padding: 0 4vw;
+                gap: 3vw;
+            }
+
+            #workspace-container {
+                top: 11vw;
+            }
+
+            #toolbar span, #toolbar a {
+                font-size: 4vw;
+            }
+
+            #toolbar button {
+                font-size: 4vw;
+                padding: 2vw 4vw;
+                border-radius: 1.5vw;
+            }
+
+            #shiftadvice {
+                display: none;
+            }
+
+            .delete-btn {
+                width:  9vw;
+                height: 9vw;
+                top:   -4.5vw;
+                right: -4.5vw;
+                line-height: 8.6vw;
+                font-size: 5vw;
+            }
+
+            .resize-handle {
+                width:  7vw;
+                height: 7vw;
+                bottom: -3.5vw;
+                right:  -3.5vw;
+            }
+
+            #slide-nav {
+                height: 13vw;
+                padding: 0 5vw;
+            }
+
+            #slide-nav button {
+                font-size: 7vw;
+                padding: 2vw 6vw;
+                border-radius: 2vw;
+                min-width: 18vw;
+                min-height: 9vw;
+            }
+
+            #nav-label {
+                font-size: 4vw;
+            }
+
+            body.portrait-mode #workspace-container {
+                bottom: 13vw;
+            }
+        }
+
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
 
@@ -194,7 +299,7 @@
 
 <div id="toolbar">
     <a style="text-decoration:underline;" href="index.html">tobjav's</a>
-    <span>ig collage maker</span>
+    <span>ig collage maker  <div id="shiftadvice">[shift+scroll to pan]</div></span>
     <div id="toolbar-right">
         <button id="add-file-btn">＋ Add</button>
         <input type="file" id="file-input" accept="image/*" multiple>
@@ -205,6 +310,12 @@
 <div id="workspace-container">
     <div id="drop-overlay">drop to import</div>
     <div id="canvas-track"></div>
+</div>
+
+<div id="slide-nav">
+    <button id="nav-prev">&#8592;</button>
+    <span id="nav-label">Slide 1 / 20</span>
+    <button id="nav-next">&#8594;</button>
 </div>
 
 <canvas id="export-canvas" style="display:none;"></canvas>
@@ -218,7 +329,7 @@ window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         splash.classList.add('fade-away');
         setTimeout(() => splash.remove(), 500);
-    }, 2000);
+    }, 800);
 });
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
@@ -380,12 +491,6 @@ function makeElementTransformable(wrapper) {
             let tx = initLeft + (e.clientX - startCX);
             let ty = initTop  + (e.clientY - startCY);
 
-            for (let i = 0; i <= TOTAL_SLIDES; i++) {
-                const sx = i * SLIDE_W;
-                if (Math.abs(tx - sx) < SNAP_THRESHOLD) tx = sx;
-                if (Math.abs(tx + wrapper.offsetWidth - sx) < SNAP_THRESHOLD) tx = sx - wrapper.offsetWidth;
-            }
-
             wrapper.style.left = tx + 'px';
             wrapper.style.top  = ty + 'px';
         }
@@ -507,8 +612,15 @@ exportBtn.addEventListener('click', async () => {
     exportCanvas.height = OUT_H;
 
     const wrappers = document.querySelectorAll('.image-wrapper');
+    const zip = new JSZip();
+
+    // Update button to show progress
+    const origLabel = exportBtn.textContent;
+    exportBtn.disabled = true;
 
     for (let i = 0; i < TOTAL_SLIDES; i++) {
+        exportBtn.textContent = (i + 1) + ' / ' + TOTAL_SLIDES;
+
         ctx.fillStyle = '#fff';
         ctx.fillRect(0, 0, OUT_W, OUT_H);
 
@@ -523,14 +635,75 @@ exportBtn.addEventListener('click', async () => {
                 ctx.drawImage(el, (x - winLeft) * scaleX, y * scaleY, ww * scaleX, wh * scaleY);
         });
 
-        const link = document.createElement('a');
-        link.download = 'scrl_slice_' + (i + 1) + '.jpg';
-        link.href = exportCanvas.toDataURL('image/jpeg', 0.95);
-        link.click();
-        await new Promise(r => setTimeout(r, 150));
+        // Convert canvas to base64 and add to zip (strip the data:image/jpeg;base64, prefix)
+        const dataUrl = exportCanvas.toDataURL('image/jpeg', 0.95);
+        const base64  = dataUrl.split(',')[1];
+        zip.file('collageslice_' + (i + 1) + '.jpg', base64, { base64: true });
+
+        // Yield to keep UI responsive
+        await new Promise(r => setTimeout(r, 0));
     }
-    alert('Export complete! Check your Downloads folder.');
+
+    exportBtn.textContent = 'Zipping...';
+    const blob = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
+    const link = document.createElement('a');
+    link.download = 'carousel_export.zip';
+    link.href = URL.createObjectURL(blob);
+    link.click();
+    URL.revokeObjectURL(link.href);
+
+    exportBtn.textContent = origLabel;
+    exportBtn.disabled = false;
 });
+
+// ── Portrait nav arrows ───────────────────────────────────────────────────────
+const slideNav = document.getElementById('slide-nav');
+const navPrev  = document.getElementById('nav-prev');
+const navNext  = document.getElementById('nav-next');
+const navLabel = document.getElementById('nav-label');
+let currentSlide = 0;
+
+function updateNavUI() {
+    navLabel.textContent  = 'Slide ' + (currentSlide + 1) + ' / ' + TOTAL_SLIDES;
+    navPrev.style.opacity = currentSlide === 0 ? '0.3' : '1';
+    navNext.style.opacity = currentSlide === TOTAL_SLIDES - 1 ? '0.3' : '1';
+}
+
+function goToSlide(index) {
+    currentSlide = Math.max(0, Math.min(TOTAL_SLIDES - 1, index));
+    workspace.scrollTo({ left: currentSlide * SLIDE_W, behavior: 'smooth' });
+    updateNavUI();
+}
+
+navPrev.addEventListener('click', () => goToSlide(currentSlide - 1));
+navNext.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+// Use a media query so portrait detection matches CSS and is reliable on mobile
+const portraitMQ = window.matchMedia('(orientation: portrait)');
+
+function applyNavMode() {
+    const portrait = portraitMQ.matches;
+    if (portrait) {
+        slideNav.style.display = 'flex';
+        document.body.classList.add('portrait-mode');
+        workspace.scrollLeft = currentSlide * SLIDE_W;
+    } else {
+        slideNav.style.display = 'none';
+        document.body.classList.remove('portrait-mode');
+    }
+    updateNavUI();
+}
+
+// Replace the resize listener with one that also updates the nav
+window.removeEventListener('resize', applyLayout);
+window.addEventListener('resize', () => { applyLayout(); applyNavMode(); });
+
+// Also fire on orientation change directly for instant response on mobile
+portraitMQ.addEventListener('change', () => { applyLayout(); applyNavMode(); });
+
+// Initial run
+applyNavMode();
+
 </script>
 </body>
 </html>
