@@ -481,12 +481,6 @@ function makeElementTransformable(wrapper) {
             let tx = initLeft + (e.clientX - startCX);
             let ty = initTop  + (e.clientY - startCY);
 
-            for (let i = 0; i <= TOTAL_SLIDES; i++) {
-                const sx = i * SLIDE_W;
-                if (Math.abs(tx - sx) < SNAP_THRESHOLD) tx = sx;
-                if (Math.abs(tx + wrapper.offsetWidth - sx) < SNAP_THRESHOLD) tx = sx - wrapper.offsetWidth;
-            }
-
             wrapper.style.left = tx + 'px';
             wrapper.style.top  = ty + 'px';
         }
