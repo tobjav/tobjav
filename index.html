@@ -3,8 +3,79 @@
 <title>tobjav</title>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script> -->
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── PORTRAIT / MOBILE SCALING ───────────────────────────────────────
+           Calibrated for ~754px portrait width (1344px landscape device).
+           Supplements style.css — desktop completely unchanged.             */
+
+        @media screen and (orientation: portrait) {
+
+            body {
+                font-size: 5vw;
+            }
+
+            .terminal-header {
+                font-size: 10vw;
+                letter-spacing: 3px;
+                transform: translateX(0);
+            }
+
+            /* Fix images overflowing at hard-coded 500px from style.css */
+            img {
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+            }
+
+            /* Keep style.css single-column layout, just fix the image width */
+            /* .column and .row intentionally not overridden */
+
+            h5 {
+                font-size: 3.5vw;
+            }
+
+            /* Re-enable lightbox in portrait (style.css hides it) */
+            .lightbox-overlay {
+                display: flex !important;
+            }
+
+                    #splash-screen {
+            position: fixed;
+            inset: 0;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+            }
+            .splash-content { display:flex; flex-direction:column; align-items:center; gap:20px; }
+            .splash-logo {
+                font-size: clamp(32px, 12vw, 72px);
+                font-weight: bold;
+                letter-spacing: 0px;
+                font-family: DM;
+            }
+            .progress-track {
+                width:180px; height:4px;
+                background:rgba(255,255,255,0.1);
+                border-radius:2px; overflow:hidden;
+            }
+            .progress-bar {
+                height:100%; width:0%;
+                background:#FABD2F;
+                animation: fakeLoad 1.8s cubic-bezier(0.4,0,0.2,1) forwards;
+            }
+            @keyframes fakeLoad {
+                0%{width:0%} 15%{width:0%} 30%{width:40%} 80%{width:75%} 100%{width:100%}
+            }
+            #splash-screen.fade-away { opacity:0; pointer-events:none; }
+
+            }
+    </style>
 </head>
 <a href="index.html" style="color:white;">
 <body style="color:white; text-align: center; font-size:x-large">
@@ -15,7 +86,7 @@
           <div class="progress-track"><div class="progress-bar"></div></div>
       </div>
   </div>
-    <img src="logo.png" alt="Logo" style="display: block; margin-left: auto; margin-right: auto; width: 500px;margin-bottom: 0%; box-shadow: 0px 0px" href="index.html">
+    <img src="logo.png" alt="Logo" style="display: block; margin-left: auto; margin-right: auto; width: min(500px, 85vw); margin-bottom: 0%; box-shadow: 0px 0px" href="index.html">
 </a>
     click <a style="text-align: center;" href="strudels.html">here</a> for my strudels
     <br><br>
@@ -32,7 +103,7 @@ tobj's <a href="collage2.html">ig carousel slicer</a>
     <img src="assets/images/blink.jpg" class="zoom-trigger" alt="Poster from 'OKO' series">
     <img src="assets/images/horse.jpg" class="zoom-trigger" alt="Russian Doll Poster">
     <img src="assets/images/okoposter.jpeg" class="zoom-trigger">
-    <img src="assets/images/spaceman.png" class="zoom-trigger">
+    <img src="assets/images/spaceman.png" class="zoom-trigger" alt="STRFKR Gig Photography">
   </div>
   <div class="column">
     <img src="assets/images/flowers.gif" class="zoom-trigger" alt="Blender Grease Pencil">
@@ -44,18 +115,17 @@ tobj's <a href="collage2.html">ig carousel slicer</a>
   </div>
   <div class="column">
     <a href="https://www.instagram.com/laptoprepair.shop"><img src="assets\images\laprepshop2.jpg"></a>
-    <img src="assets/images/cup.gif" class="zoom-trigger" alt="B3D animation">
-    <img src="assets/images/uommae.png" class="zoom-trigger" alt="Design for Uni of Manchester Mech and Aero Engineering">
-    <img src="assets/images/spolu.jpg" class="zoom-trigger">
+    <img src="assets/images/cup.gif" class="zoom-trigger"             alt="B3D animation">
+    <img src="assets/images/uommae.png" class="zoom-trigger"          alt="Design for Uni of Manchester Mech and Aero Engineering">
+    <img src="assets/images/spolu.jpg" class="zoom-trigger"           alt="Adela Meda 'Spolu' Poster Design">
     <img src="assets/images/pomoc.jpg" class="zoom-trigger">
   </div>
   <div class="column">
-    <img src="assets/images/bluestr.png" class="zoom-trigger" alt="Concert Photography for STRFKR">
-    <img src="assets\images\minuteofgold.jpg" class="zoom-trigger" alt="Men I Trust Design">
-    <img src="assets/images/lizardposter.jpeg" class="zoom-trigger"
-    alt="Poster from 'OKO' series">
-    <img src="assets/images/lina2.png" class="zoom-trigger" alt="@linaa.sobo Poster">
-    <img src="assets/images/space.jpg" class="zoom-trigger" alt="B3D Environment">
+    <img src="assets/images/bluestr.png" class="zoom-trigger"         alt="Concert Photography for STRFKR">
+    <img src="assets\images\minuteofgold.jpg" class="zoom-trigger"    alt="Men I Trust Design">
+    <img src="assets/images/lizardposter.jpeg" class="zoom-trigger"   alt="Poster from 'OKO' series">
+    <img src="assets/images/lina2.png" class="zoom-trigger"           alt="@linaa.sobo Poster">
+    <img src="assets/images/space.jpg" class="zoom-trigger"           alt="B3D Environment">
   </div>
 </div>
 <br>

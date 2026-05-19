@@ -180,10 +180,10 @@
         .progress-bar {
             height:100%; width:0%;
             background:#FABD2F;
-            animation: fakeLoad 1.8s cubic-bezier(0.4,0,0.2,1) forwards;
+            animation: fakeLoad 0.8s cubic-bezier(0.4,0,0.2,1) forwards;
         }
         @keyframes fakeLoad {
-            0%{width:0%} 15%{width:0%} 30%{width:40%} 80%{width:75%} 100%{width:100%}
+            0%{width:0%} 15%{width:0%} 30%{width:50%} 80%{width:50%} 100%{width:100%}
         }
         #splash-screen.fade-away { opacity:0; pointer-events:none; }
 
@@ -329,7 +329,7 @@ window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         splash.classList.add('fade-away');
         setTimeout(() => splash.remove(), 500);
-    }, 2000);
+    }, 800);
 });
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
