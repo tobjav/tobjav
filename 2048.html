@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2048 — tobjav</title>
+    <style>
+        @font-face {
+            font-family: 'DM';
+            src: url('DMSans-VariableFont_opsz,wght.ttf') format('woff2');
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:      #111111;
+            --gold:    #FABD2F;
+            --blue:    #007AFF;
+            --white:   #ffffff;
+            --cell:    #222222;
+            --grid-bg: #1a1a1a;
+            --border:  #2a2a2a;
+        }
+
+        html, body {
+            height: 100%;
+            background: var(--bg);
+            color: var(--white);
+            font-family: DM, sans-serif;
+            overflow: hidden;
+        }
+
+        /* ── SPLASH ── */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+        .splash-content { display:flex; flex-direction:column; align-items:center; gap:20px; }
+        .splash-logo {
+            font-size: clamp(32px, 12vw, 72px);
+            font-weight: bold;
+            letter-spacing: 0px;
+            font-family: DM;
+        }
+        .progress-track { width: 180px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+        .progress-bar {
+            height: 100%; width: 0%;
+            background: var(--gold);
+            animation: fakeLoad 1.8s cubic-bezier(0.4,0,0.2,1) forwards;
+        }
+        @keyframes fakeLoad {
+            0%{width:0%} 15%{width:0%} 30%{width:40%} 80%{width:75%} 100%{width:100%}
+        }
+        #splash-screen.fade-away { opacity: 0; pointer-events: none; }
+
+        /* ── LAYOUT ── */
+        #app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            padding: 20px 16px 12px;
+        }
+
+        /* ── HEADER ── */
+        #header {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        #title-block { display: flex; flex-direction: column; }
+        #title {
+            font-size: clamp(40px, 11vw, 68px);
+            font-weight: 900;
+            letter-spacing: -2px;
+            color: var(--gold);
+            line-height: 1;
+        }
+        #subtitle {
+            font-size: clamp(10px, 2.5vw, 12px);
+            color: #555;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+        #score-box {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 8px 16px;
+            text-align: center;
+            min-width: 80px;
+        }
+        #score-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #555; }
+        #value { font-size: clamp(20px, 5vw, 28px); font-weight: 900; color: var(--gold); }
+
+        /* ── CONTROLS ── */
+        #controls {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        #hint { font-size: clamp(10px, 2.5vw, 12px); color: #444; letter-spacing: 1px; }
+        #controls-right { display: flex; gap: 8px; }
+
+        button.ctrl-btn {
+            background: #1e1e1e;
+            color: var(--white);
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            padding: 7px 14px;
+            font-family: DM, sans-serif;
+            font-size: clamp(11px, 2.8vw, 13px);
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: background 0.15s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        button.ctrl-btn:hover  { background: #2a2a2a; }
+        button.ctrl-btn:active { background: #333; }
+        button.ctrl-btn.primary { background: var(--blue); border-color: var(--blue); }
+        button.ctrl-btn.primary:hover  { background: #0056b3; }
+
+        /* ── HOW TO PLAY PANEL ── */
+        #description {
+            position: fixed;
+            left: 50%; top: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: min(340px, 88vw);
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 32px;
+            z-index: 500;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #aaa;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s all;
+        }
+        #description.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        #description strong { color: var(--gold); }
+
+        /* ── GRID WRAPPER ── */
+        #grid-wrap {
+            width: 100%;
+            max-width: 480px;
+            flex-shrink: 0;
+            position: relative; /* .grid positions absolutely against this */
+        }
+
+        /* ── FIELD + GRID: CSS grid layout, no table display ── */
+        .field, .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 8px;
+            padding: 8px;
+            border-radius: 10px;
+            width: 100%;
+            aspect-ratio: 1;
+        }
+        .field {
+            background: var(--grid-bg);
+            position: relative;
+            z-index: 50;
+        }
+        .grid {
+            position: absolute;
+            top: 0; left: 0;
+            background: transparent;
+            z-index: 100;
+        }
+
+        /* rows are invisible wrappers — grid cells lay themselves out */
+        .row, .grid_row {
+            display: contents;
+        }
+
+        .cell, .grid_cell {
+            background: var(--cell);
+            border-radius: 6px;
+            position: relative;
+            font-family: DM, sans-serif;
+            font-weight: 900;
+        }
+        .grid_cell { background: transparent; }
+
+        /* ── TILES ── */
+
+        .tile {
+            opacity: 1;
+            position: absolute;
+            inset: 0;
+            background: var(--cell);
+            z-index: 150;
+            font-weight: 900;
+            color: var(--white);
+            border-radius: 6px;
+            transition: 0.12s all;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: clamp(14px, 4.5vw, 32px);
+        }
+
+        /* ── WIN / LOSE OVERLAY ── */
+        #status {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(32px, 10vw, 64px);
+            font-weight: 900;
+            letter-spacing: -1px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: 200;
+        }
+        #status::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(17,17,17,0.85);
+        }
+        #status span { position: relative; z-index: 1; }
+        .won  { opacity: 1 !important; pointer-events: all !important; color: var(--gold); }
+        .lose { opacity: 1 !important; pointer-events: all !important; color: #FF3B30; }
+
+        /* ── FOOTER ── */
+        #footer {
+            margin-top: 14px;
+            font-size: clamp(11px, 2.8vw, 12px);
+            color: #444;
+        }
+        #footer a { color: var(--gold); text-decoration: underline; font-weight: bold; }
+
+        /* ── PORTRAIT ── */
+        @media (orientation: portrait) {
+            #app { padding: 14px 12px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="splash-screen">
+    <div class="splash-content">
+        <div class="splash-logo">tobjav</div>
+        <div class="progress-track"><div class="progress-bar"></div></div>
+    </div>
+</div>
+
+<div id="app">
+    <div id="header">
+        <div id="title-block">
+            <div id="title">2048</div>
+            <div id="subtitle">tobjav edition</div>
+        </div>
+        <div id="score-box">
+            <div id="score-label">score</div>
+            <div id="value">0</div>
+        </div>
+    </div>
+
+    <div id="controls">
+        <span id="hint">arrow keys or swipe_</span>
+        <div id="controls-right">
+            <button class="ctrl-btn" onclick="info()">HOW TO</button>
+            <button class="ctrl-btn primary" onclick="reset()">NEW GAME</button>
+        </div>
+    </div>
+
+    <div id="grid-wrap">
+        <!-- background field -->
+        <div class="field">
+            <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+            <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+            <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+            <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+        </div>
+    </div>
+
+    <div id="footer"><a href="index.html">← back to tobjav</a></div>
+</div>
+
+<!-- how to play -->
+<div class="description" id="description">
+    <strong>HOW TO PLAY</strong><br><br>
+    Use arrow keys to slide tiles.<br>
+    Two matching tiles merge into one.<br>
+    Reach <strong>2048</strong> to win.<br><br>
+    Score = sum of all merges.
+</div>
+
+<!-- win/lose -->
+<div class='' id='status'><span id="status-text"></span></div>
+
+<script>
+// ── Splash ────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+    const splash = document.getElementById('splash-screen');
+    setTimeout(() => {
+        splash.classList.add('fade-away');
+        setTimeout(() => splash.remove(), 500);
+    }, 2000);
+});
+
+// ── Win/lose text ─────────────────────────────────────────────────────────────
+// Patch the status div so it shows a message
+const _statusEl = document.getElementById('status');
+const _statusTxt = document.getElementById('status-text');
+const _origSetClass = Object.getOwnPropertyDescriptor(Element.prototype, 'className').set;
+Object.defineProperty(_statusEl, 'className', {
+    set(v) {
+        _origSetClass.call(this, v);
+        if (v === 'won')  { _statusTxt.textContent = 'YOU WIN ✦'; }
+        if (v === 'lose') { _statusTxt.textContent = 'GAME OVER'; }
+        if (v === '')     { _statusTxt.textContent = ''; }
+    },
+    get() { return this.getAttribute('class') || ''; }
+});
+
+// ── Touch swipe ───────────────────────────────────────────────────────────────
+let _tx, _ty;
+document.addEventListener('touchstart', e => { _tx = e.touches[0].clientX; _ty = e.touches[0].clientY; }, { passive: true });
+document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - _tx;
+    const dy = e.changedTouches[0].clientY - _ty;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+    const fakeKey = Math.abs(dx) > Math.abs(dy)
+        ? (dx > 0 ? { keyCode: 39 } : { keyCode: 37 })
+        : (dy > 0 ? { keyCode: 40 } : { keyCode: 38 });
+    directions(fakeKey);
+}, { passive: true });
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ORIGINAL GAME LOGIC (unchanged from source)
+// ══════════════════════════════════════════════════════════════════════════════
+
+window.onload = function() {
+  buildGridOverlay();
+  cellCreator(2, 0);
+  directions();
+  score(0);
+};
+
+function buildGridOverlay() {
+  var size  = 4;
+  var table = document.createElement('DIV');
+  table.className = 'grid';
+  table.id = ' ';
+  table.dataset.value = 0;
+  for (var i = 0; i < size; i++) {
+    var tr = document.createElement('DIV');
+    tr.id = 'row_' + (i+1);
+    tr.className = 'grid_row';
+    for (var j = 0; j < size; j++) {
+      var td = document.createElement('DIV');
+      td.id = '' +(i+1) +(j+1);
+      td.className = 'grid_cell';
+      tr.appendChild(td);
+    }
+    table.appendChild(tr);
+  }
+  document.getElementById('grid-wrap').appendChild(table);
+  return table;
+}
+
+function cellCreator(c, timeOut) {
+  for (var i = 0; i < c; i++) {
+    for (var value = 1; value < 2; value++) {
+      var randomX = Math.floor((Math.random()*4)+1);
+      var randomY = Math.floor((Math.random()*4)+1);
+      var checker = document.getElementById('' +randomX +randomY);
+      if (checker.innerHTML != '') { value = 0; }
+    }
+    var randomValue = Math.floor((Math.random()*4) +1);
+    if (randomValue == 3) { randomValue=4; }
+    if (randomValue == 1) { randomValue=2; }
+    var position = document.getElementById(''+randomX +randomY);
+    var tile = document.createElement('DIV');
+    position.appendChild(tile);
+    tile.innerHTML = ''+randomValue;
+    colorSet(randomValue, tile);
+    tile.data = ''+randomValue;
+    tile.id = 'tile_'+randomX +randomY;
+    position.className += ' active';
+    tile.dataset.value = ''+randomValue;
+    if (timeOut == 0) {
+      tile.className = 'tile '+randomValue;
+    } else {
+      setTimeout(function() { tile.className = 'tile '+randomValue; }, 10);
+    }
+  }
+}
+
+document.onkeydown = directions;
+
+function directions(e) {
+  e = e || window.event;
+  if (e.keyCode == '38') {
+    var count = 2;
+    for (var x = 2; x > 1; x--) {
+      for (var y = 1; y < 5; y++) { moveTilesMain(x, y, -1, 0, 1, 0); }
+      if (x == 2) { x += count; count++; }
+      if (count > 4) { break; }
+    }
+    cellReset();
+  } else if (e.keyCode == '40') {
+    var count = -2;
+    for (var x = 3; x < 4; x++) {
+      for (var y = 1; y < 5; y++) { moveTilesMain(x, y, 1, 0, 4, 0); }
+      if (x == 3) { x += count; count--; }
+      if (count < -4) { break; }
+    }
+    cellReset();
+  } else if (e.keyCode == '37') {
+    var count = 2;
+    for (var x = 2; x > 1; x--) {
+      for (var y = 1; y < 5; y++) { moveTilesMain(y, x, 0, -1, 0, 1); }
+      if (x == 2) { x += count; count++; }
+      if (count > 4) { break; }
+    }
+    cellReset();
+  } else if (e.keyCode == '39') {
+    var count = -2;
+    var c = 1; var d = 0;
+    for (var x = 3; x < 4; x++) {
+      for (var y = 1; y < 5; y++) { moveTilesMain(y, x, 0, 1, 0, 4, c, d); }
+      if (x == 3) { x += count; count--; }
+      if (count < -4) { break; }
+    }
+    cellReset();
+  }
+}
+
+function moveTilesMain(x, y, X, Y, xBorder, yBorder, c, d) {
+  var tile    = document.getElementById('tile_'+x +y);
+  var checker = document.getElementById(''+x +y);
+  var xAround = x+X;
+  var yAround = y+Y;
+  if (xAround > 0 && xAround < 5 && yAround > 0 && yAround < 5 && checker.className == 'grid_cell active') {
+    var around = document.getElementById(''+xAround +yAround);
+    if (around.className == 'grid_cell active') {
+      var aroundTile = document.getElementById('tile_'+xAround +yAround);
+      if (aroundTile.innerHTML == tile.innerHTML) {
+        var value = tile.dataset.value*2;
+        aroundTile.dataset.value = ''+value;
+        aroundTile.className = 'tile '+value;
+        aroundTile.innerHTML = ''+value;
+        colorSet(value, aroundTile);
+        checker.removeChild(tile);
+        checker.className = 'grid_cell';
+        around.className  = 'grid_cell active merged';
+        document.getElementsByClassName('grid').id = 'moved';
+        document.getElementsByClassName('grid').className = 'grid '+value;
+        var grid = document.getElementById(' ');
+        var scoreValue = parseInt(grid.dataset.value);
+        var newScore = value + scoreValue;
+        grid.dataset.value = newScore;
+        var score = document.getElementById('value');
+        score.innerHTML = ''+newScore;
+      }
+    } else if (around.className == 'grid_cell') {
+      around.appendChild(tile);
+      around.className = 'grid_cell active';
+      tile.id = 'tile_'+xAround +yAround;
+      checker.className = 'grid_cell';
+      document.getElementsByClassName('grid').id = 'moved';
+    }
+  }
+}
+
+function cellReset() {
+  var count = 0;
+  var a = document.getElementsByClassName('grid').id;
+  for (var x=1; x<5; x++) {
+    for (var y=1; y<5; y++) {
+      var resetter = document.getElementById(''+x +y);
+      if (resetter.innerHTML != '') { count++; }
+      if (resetter.innerHTML == '') { resetter.className = 'grid_cell'; }
+      if (resetter.className == 'grid_cell active merged') { resetter.className = 'grid_cell active'; }
+    }
+  }
+  if (count == 16) {
+    document.getElementById('status').className = 'lose';
+  } else if (document.getElementsByClassName('grid').id == 'moved') {
+    cellCreator(1, 1);
+  }
+  document.getElementsByClassName('grid').id = ' ';
+}
+
+function score() {
+  var grid = document.getElementById(' ');
+  var value = grid.dataset.value;
+  document.getElementById('value').innerHTML = ''+value;
+}
+
+function colorSet(value, tile) {
+  switch(value) {
+    case 2:    tile.style.background = '#2a2a2a'; tile.style.color = '#aaa';         break;
+    case 4:    tile.style.background = '#333';    tile.style.color = '#ccc';         break;
+    case 8:    tile.style.background = '#3a3020'; tile.style.color = '#FABD2F';      break;
+    case 16:   tile.style.background = '#4a3a10'; tile.style.color = '#FABD2F';      break;
+    case 32:   tile.style.background = '#5a4800'; tile.style.color = '#FABD2F';      break;
+    case 64:   tile.style.background = '#7a6000'; tile.style.color = '#fff';         break;
+    case 128:  tile.style.background = '#FABD2F'; tile.style.color = '#111';
+               tile.style.fontSize = 'clamp(14px,4vw,30px)'; break;
+    case 256:  tile.style.background = '#f5c842'; tile.style.color = '#111';
+               tile.style.fontSize = 'clamp(14px,4vw,30px)'; break;
+    case 512:  tile.style.background = '#007AFF'; tile.style.color = '#fff';
+               tile.style.fontSize = 'clamp(14px,4vw,30px)'; break;
+    case 1024: tile.style.background = '#0056d6'; tile.style.color = '#fff';
+               tile.style.fontSize = 'clamp(12px,3.2vw,24px)'; break;
+    case 2048: tile.style.background = '#fff';    tile.style.color = '#111';
+               tile.style.fontSize = 'clamp(12px,3.2vw,24px)';
+               document.getElementById('status').className = 'won'; break;
+    case 4096: tile.style.background = '#FF3B30'; tile.style.color = '#fff';
+               tile.style.fontSize = 'clamp(12px,3.2vw,24px)'; break;
+    case 8192: tile.style.background = '#c0392b'; tile.style.color = '#fff';
+               tile.style.fontSize = 'clamp(12px,3.2vw,24px)'; break;
+  }
+}
+
+function info() {
+  setTimeout(function() {
+    document.getElementById('description').classList.toggle('show');
+  }, 10);
+}
+
+function reset() {
+  for (var x = 1; x < 5; x++) {
+    for (var y = 1; y < 5; y++) {
+      var resetter = document.getElementById(''+x +y);
+      if (resetter.className == 'grid_cell active') {
+        var tile = document.getElementById('tile_'+x +y);
+        resetter.removeChild(tile);
+      }
+    }
+  }
+  document.getElementById('status').className = '';
+  document.getElementById(' ').dataset.value = 0;
+  score();
+  cellReset();
+  cellCreator(2, 0);
+}
+</script>
+</body>
+</html>
