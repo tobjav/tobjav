@@ -30,7 +30,7 @@ h5 {
 .terminal-header::after {
   content: "_";
   margin-left: 15px;
-  color: #fabd2f; 
+  color: #A682FF; 
   animation: blink 1s step-end infinite;
 }
 
@@ -52,7 +52,7 @@ img {
 }
 
 a {
-  color: #fabd2f;
+  color: #A682FF;
   text-decoration: underline;
   font-weight: bolder;
 }
@@ -137,7 +137,7 @@ table {
 }
 .progress-bar {
     height:100%; width:0%;
-    background:#FABD2F;
+    background:#A682FF;
     animation: fakeLoad 1.8s cubic-bezier(0.4,0,0.2,1) forwards;
 }
 @keyframes fakeLoad {
@@ -167,7 +167,7 @@ table {
   bottom: 0;
   margin: auto;
   border: 3px solid;
-  border-color: transparent #fabd2f #fabd2f;
+  border-color: transparent #A682FF #A682FF;
   width: 24px;
   height: 24px;
   border-radius: 50%;
